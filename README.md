@@ -1,6 +1,8 @@
 # Менеджер задач (Java)
 
 [![hexlet-check](https://github.com/AlexFrankiv/java-project-99/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/AlexFrankiv/java-project-99/actions)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AlexFrankiv_java-project-99)](https://sonarcloud.io/summary/new_code?id=AlexFrankiv_java-project-99)
+[![Quality gate](https://sonarcloud.io/api/project_badges/quality_gate?project=AlexFrankiv_java-project-99)](https://sonarcloud.io/summary/new_code?id=AlexFrankiv_java-project-99)
 
 На практике узнаете про проектирование баз данных, связи между сущностями, PaaS, ORM, мониторинг ошибок, Swagger, фреймворк Spring.
 
