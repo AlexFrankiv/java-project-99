@@ -6,10 +6,10 @@ import hexlet.code.app.dto.users.UserUpdateDTO;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 
 import java.util.List;
 
@@ -17,6 +17,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserMapper userMapper;
@@ -37,9 +40,7 @@ public class UserService {
 
     public UserDTO createUser(UserCreateDTO dataDTO) {
         var user = userMapper.map(dataDTO);
-        String salt = BCrypt.gensalt();
-        String hashedPassword = BCrypt.hashpw(user.getPassword(), salt);
-        user.setPassword(hashedPassword);
+        passwordEncoder.encode(user.getPassword());
         userRepository.save(user);
         var userDTO = userMapper.map(user);
 
