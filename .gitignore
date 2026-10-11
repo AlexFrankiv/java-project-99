@@ -37,6 +37,7 @@ out/
 ### VS Code ###
 .vscode/
 
-*.pem
 *.key
 id_rsa*
+!src/main/resources/certs/
+!src/main/resources/certs/*.pem
