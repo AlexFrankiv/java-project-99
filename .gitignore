@@ -40,3 +40,4 @@ out/
 *.pem
 *.key
 id_rsa*
+!*.pub
