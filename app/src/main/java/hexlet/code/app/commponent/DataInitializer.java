@@ -32,7 +32,8 @@ public class DataInitializer implements ApplicationRunner {
         }
         User admin = new User();
         admin.setEmail(email);
-        passwordEncoder.encode(admin.getPassword());
+        String rawPassword = "password";
+        admin.setPassword(passwordEncoder.encode(rawPassword));
 
 
         userRepository.save(admin);
