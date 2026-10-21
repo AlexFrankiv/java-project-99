@@ -7,7 +7,6 @@ import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,9 +51,8 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User with id - " + id + " not found!"));
         userMapper.update(dataDTO, user);
         userRepository.save(user);
-        var userDTO = userMapper.map(user);
 
-        return userDTO;
+        return userMapper.map(user);
 
     }
 

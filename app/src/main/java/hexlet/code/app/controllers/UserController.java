@@ -7,6 +7,7 @@ import hexlet.code.app.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,8 +19,13 @@ public class UserController {
     private UserService userService;
 
     @GetMapping("/users")
-    public List<UserDTO> getAllUsers() {
-        return userService.getAll();
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        var users = userService.getAll();
+
+        return ResponseEntity.ok()
+                .header("X-Total-Count", String.valueOf(users.size()))
+                .body(users);
+
     }
 
     @GetMapping("/users/{id}")
