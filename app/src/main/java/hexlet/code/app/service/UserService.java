@@ -3,8 +3,10 @@ package hexlet.code.app.service;
 import hexlet.code.app.dto.users.UserCreateDTO;
 import hexlet.code.app.dto.users.UserDTO;
 import hexlet.code.app.dto.users.UserUpdateDTO;
+import hexlet.code.app.exceptions.ResourceInUseException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +24,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public List<UserDTO> getAll() {
         var result = userRepository.findAll().stream().map(userMapper::map).toList();
@@ -57,6 +62,9 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
+        if (taskRepository.existsByAssigneeId(id)) {
+            throw new ResourceInUseException("Cannot delete user: user is assigned to tasks");
+        }
         userRepository.deleteById(id);
     }
 }

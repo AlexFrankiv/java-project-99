@@ -3,8 +3,10 @@ package hexlet.code.app.service;
 import hexlet.code.app.dto.taskStatus.TaskStatusCreateDTO;
 import hexlet.code.app.dto.taskStatus.TaskStatusDTO;
 import hexlet.code.app.dto.taskStatus.TaskStatusUpdateDTO;
+import hexlet.code.app.exceptions.ResourceInUseException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.TaskStatusMapper;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ public class TaskStatusService {
 
     @Autowired
     private TaskStatusMapper taskStatusMapper;
+
+    @Autowired
+    private TaskRepository taskRepository;
 
     public List<TaskStatusDTO> getAllStatuses() {
         return taskStatusRepository.findAll().stream().map(taskStatusMapper::map).toList();
@@ -49,6 +54,10 @@ public class TaskStatusService {
     }
 
     public void deleteStatus(Long id) {
+        if (taskRepository.existsByTaskStatusId(id)) {
+            throw new ResourceInUseException("Cannot delete status: it is used by tasks");
+        }
         taskStatusRepository.deleteById(id);
     }
+
 }
