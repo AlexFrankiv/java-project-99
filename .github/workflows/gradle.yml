@@ -29,6 +29,10 @@ jobs:
     - name: Change to app directory
       working-directory: ./app
       run: pwd
+      
+    - name: Run tests and generate coverage
+      working-directory: ./app
+      run: ./gradlew test jacocoTestReport
   
     - name: Build project
       working-directory: ./app
