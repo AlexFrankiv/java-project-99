@@ -24,7 +24,7 @@ public class TaskSpecification {
             if (labelId == null) {
                 return null;
             }
-            // Для ManyToMany нужен join
+            query.distinct(true);
             return cb.equal(root.join("labels").get("id"), labelId);
         };
     }

@@ -6,6 +6,7 @@ import hexlet.code.app.dto.labels.LabelUpdateDTO;
 import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Transactional
 public class LabelControllerTest {
     @Autowired
     private MockMvc mockMvc;
