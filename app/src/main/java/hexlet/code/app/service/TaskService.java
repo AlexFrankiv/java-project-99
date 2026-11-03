@@ -5,13 +5,16 @@ import hexlet.code.app.dto.tasks.TaskDTO;
 import hexlet.code.app.dto.tasks.TaskUpdateDTO;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.TaskMapper;
-import hexlet.code.app.repository.TaskRepository;
-import hexlet.code.app.repository.TaskStatusRepository;
-import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.model.Label;
+import hexlet.code.app.model.Task;
+import hexlet.code.app.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class TaskService {
@@ -27,8 +30,16 @@ public class TaskService {
     @Autowired
     private TaskMapper taskMapper;
 
-    public List<TaskDTO> getAllTasks() {
-        return taskRepository.findAll().stream()
+    @Autowired
+    private LabelRepository labelRepository;
+
+    public List<TaskDTO> getAllTasks(String titleCont, Long assigneeId, String status, Long labelId) {
+        Specification<Task> spec = Specification.where(TaskSpecification.titleContains(titleCont))
+                .and(TaskSpecification.hasAssigneeId(assigneeId))
+                .and(TaskSpecification.hasStatus(status))
+                .and(TaskSpecification.hasLabelId(labelId));
+
+        return taskRepository.findAll(spec).stream()
                 .map(taskMapper::map)
                 .toList();
     }
@@ -52,6 +63,11 @@ public class TaskService {
             var assignee = userRepository.findById(data.getAssigneeId())
                     .orElseThrow(() -> new ResourceNotFoundException("User not found"));
             task.setAssignee(assignee);
+        }
+
+        if (data.getTaskLabelIds() != null) {
+            Set<Label> labels = new HashSet<>(labelRepository.findAllById(data.getTaskLabelIds()));
+            task.setLabels(labels);
         }
 
         taskRepository.save(task);
@@ -80,6 +96,11 @@ public class TaskService {
                         .orElseThrow(() -> new ResourceNotFoundException("User not found"));
                 task.setAssignee(assignee);
             }
+        }
+
+        if (data.getTaskLabelIds().isPresent()) {
+            Set<Long> ids = data.getTaskLabelIds().get();
+            task.setLabels(ids == null ? new HashSet<>() : new HashSet<>(labelRepository.findAllById(ids)));
         }
 
         taskRepository.save(task);

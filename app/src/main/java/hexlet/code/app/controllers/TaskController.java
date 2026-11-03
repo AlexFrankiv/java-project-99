@@ -19,12 +19,16 @@ public class TaskController {
     private TaskService taskService;
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<TaskDTO>> getAll() {
-        var tasks = taskService.getAllTasks();
+    public ResponseEntity<List<TaskDTO>> getAll(@RequestParam(required = false) String titleCont,
+                                                @RequestParam(required = false) Long assigneeId,
+                                                @RequestParam(required = false) String status,
+                                                @RequestParam(required = false) Long labelId) {
+        var tasks = taskService.getAllTasks(titleCont, assigneeId, status, labelId);
 
         return ResponseEntity.ok()
                 .header("X-Total-Count", String.valueOf(tasks.size()))
                 .body(tasks);
+
     }
 
     @GetMapping("/tasks/{id}")

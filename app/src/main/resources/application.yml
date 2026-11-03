@@ -5,12 +5,13 @@ spring:
   jpa:
     generate-ddl: true
     show-sql: true
-  output:
-    ansi:
-      enabled: always
     properties:
       hibernate:
         format_sql: true
+  output:
+    ansi:
+      enabled: always
+
   datasource:
     url: jdbc:h2:mem:mydb
     username: ${DB_USERNAME}
