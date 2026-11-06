@@ -3,10 +3,11 @@ WORKDIR /app
 COPY app .
 
 RUN chmod +x gradlew
-RUN ./gradlew installDist --no-daemon -x test
+RUN ./gradlew bootJar --no-daemon -x test
 
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
-COPY --from=builder /app/build/install/app ./
+COPY --from=builder /app/build/libs/*.jar app.jar
+
 EXPOSE 8080
-CMD ["./bin/app"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
