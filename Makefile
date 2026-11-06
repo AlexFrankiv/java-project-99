@@ -1,8 +1,10 @@
 setup:
-	cd app && ./gradlew clean build -x test
+	cd app && npm install
+	cd app && npx build-frontend
+	cd app && gradle clean build -x test
 
 test:
-	cd app && ./gradlew test
+	cd app && gradle test
 
 lint:
-	cd app && ./gradlew checkstyleMain
+	cd app && gradle checkstyleMain
