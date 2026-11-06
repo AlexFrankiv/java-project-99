@@ -47,3 +47,4 @@ id_rsa*
 !src/main/resources/certs/
 !src/main/resources/certs/*.pem
 !*.pub
+node_modules/
