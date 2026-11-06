@@ -1,6 +1,6 @@
 setup:
-	cd app && npm install
-	cd app && npx build-frontend
+	npm install
+	npx build-frontend
 	cd app && gradle clean build -x test
 
 test:
