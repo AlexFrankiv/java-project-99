@@ -39,10 +39,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                             .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/{path:[^\\.]*}").permitAll()
+                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/{path:[^\\.]*}").permitAll()
                             .requestMatchers("/api/login").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
-                                .requestMatchers("/api/**").authenticated()
+                            .requestMatchers("/api/**").authenticated()
                             .anyRequest().authenticated())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
