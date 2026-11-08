@@ -7,11 +7,11 @@ import org.openapitools.jackson.nullable.JsonNullable;
 @Getter
 @Setter
 public class UserUpdateDTO {
-    private JsonNullable<String> firstName;
+    private JsonNullable<String> firstName = JsonNullable.undefined();
 
-    private JsonNullable<String> lastName;
+    private JsonNullable<String> lastName = JsonNullable.undefined();
 
-    private JsonNullable<String> email;
+    private JsonNullable<String> email = JsonNullable.undefined();
 
-    private JsonNullable<String> password;
+    private JsonNullable<String> password = JsonNullable.undefined();
 }

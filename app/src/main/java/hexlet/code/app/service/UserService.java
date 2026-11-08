@@ -60,24 +60,24 @@ public class UserService {
     public UserDTO updateUser(UserUpdateDTO dataDTO, Long id) {
         var currentUser = userUtils.getCurrentUser();
 
-        if (currentUser != null && !currentUser.getEmail().equals("hexlet@example.com") && !currentUser.getId().equals(id)) {
+        if (currentUser != null &&
+                !currentUser.getEmail().equals("hexlet@example.com") &&
+                !currentUser.getId().equals(id)) {
             throw new AccessDeniedException("You can only edit your own profile");
         }
 
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id - " + id + " not found!"));
 
-        if (dataDTO.getFirstName().isPresent()) {
-            user.setFirstName(dataDTO.getFirstName().get());
-        }
-        if (dataDTO.getLastName().isPresent()) {
-            user.setLastName(dataDTO.getLastName().get());
-        }
-        if (dataDTO.getEmail().isPresent()) {
-            user.setEmail(dataDTO.getEmail().get());
-        }
-        if (dataDTO.getPassword().isPresent() && dataDTO.getPassword().get() != null) {
+        String oldPassword = user.getPassword();
+
+        userMapper.update(dataDTO, user);
+
+        if (dataDTO.getPassword() != null && dataDTO.getPassword().isPresent()
+                && dataDTO.getPassword().get() != null && !dataDTO.getPassword().get().isBlank()) {
             user.setPassword(passwordEncoder.encode(dataDTO.getPassword().get()));
+        } else {
+            user.setPassword(oldPassword);
         }
 
         userRepository.save(user);
