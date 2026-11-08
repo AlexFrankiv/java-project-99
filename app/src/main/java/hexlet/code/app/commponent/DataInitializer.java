@@ -61,9 +61,9 @@ public class DataInitializer implements ApplicationRunner {
 
     private void initTaskStatuses() {
         createStatusIfNotExists("draft", "Draft");
-        createStatusIfNotExists("to_review", "To Review");
-        createStatusIfNotExists("to_be_fixed", "To Be Fixed");
-        createStatusIfNotExists("to_publish", "To Publish");
+        createStatusIfNotExists("to_review", "ToReview");
+        createStatusIfNotExists("to_be_fixed", "ToBeFixed");
+        createStatusIfNotExists("to_publish", "ToPublish");
         createStatusIfNotExists("published", "Published");
     }
 
