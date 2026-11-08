@@ -8,8 +8,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -40,21 +39,23 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth ->
                         auth
                             .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/{path:[^\\.]*}").permitAll()
                             .requestMatchers("/api/login").permitAll()
                             .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
+                                .requestMatchers("/api/**").authenticated()
                             .anyRequest().authenticated())
                 .sessionManagement(
                         session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(
                             (rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder)))
-                .httpBasic(Customizer.withDefaults())
                 .build();
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class).build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
+
 
     @Bean
     public AuthenticationProvider daoAuthProvider() {

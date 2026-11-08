@@ -6,7 +6,6 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -15,7 +14,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class DataInitializer implements ApplicationRunner {
 
@@ -41,14 +39,21 @@ public class DataInitializer implements ApplicationRunner {
     private void initAdmin() {
         String email = "hexlet@example.com";
 
-        if (userRepository.findByEmail(email).isPresent()) {
-            log.info("Администратор {} уже существует", email);
+        var existingAdmin = userRepository.findByEmail(email);
+
+        if (existingAdmin.isPresent()) {
+            var admin = existingAdmin.get();
+            admin.setPassword(passwordEncoder.encode("qwerty"));
+            userRepository.save(admin);
+            log.info("Пароль администратора {} обновлен", email);
             return;
         }
 
         User admin = new User();
         admin.setEmail(email);
-        admin.setPassword(passwordEncoder.encode("password"));
+        admin.setFirstName("Admin");
+        admin.setLastName("Adminov");
+        admin.setPassword(passwordEncoder.encode("qwerty"));
         userRepository.save(admin);
 
         log.info("Администратор {} создан", email);

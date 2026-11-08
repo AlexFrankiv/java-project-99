@@ -45,7 +45,7 @@ public class TaskStatusControllerTest {
     void setUp() throws Exception {
         var loginRequest = new AuthRequest();
         loginRequest.setUsername("hexlet@example.com");
-        loginRequest.setPassword("password");
+        loginRequest.setPassword("qwerty");
 
         var response = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
