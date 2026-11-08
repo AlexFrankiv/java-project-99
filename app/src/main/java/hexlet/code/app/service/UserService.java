@@ -60,24 +60,27 @@ public class UserService {
     public UserDTO updateUser(UserUpdateDTO dataDTO, Long id) {
         var currentUser = userUtils.getCurrentUser();
 
-        // Проверка: если это не админ и он пытается изменить не свой профиль -> 403
-        if (currentUser != null &&
-                !currentUser.getEmail().equals("hexlet@example.com") &&
-                !currentUser.getId().equals(id)) {
+        if (currentUser != null && !currentUser.getEmail().equals("hexlet@example.com") && !currentUser.getId().equals(id)) {
             throw new AccessDeniedException("You can only edit your own profile");
         }
 
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id - " + id + " not found!"));
 
-        userMapper.update(dataDTO, user);
-
+        if (dataDTO.getFirstName().isPresent()) {
+            user.setFirstName(dataDTO.getFirstName().get());
+        }
+        if (dataDTO.getLastName().isPresent()) {
+            user.setLastName(dataDTO.getLastName().get());
+        }
+        if (dataDTO.getEmail().isPresent()) {
+            user.setEmail(dataDTO.getEmail().get());
+        }
         if (dataDTO.getPassword().isPresent() && dataDTO.getPassword().get() != null) {
             user.setPassword(passwordEncoder.encode(dataDTO.getPassword().get()));
         }
 
         userRepository.save(user);
-
         return userMapper.map(user);
 
     }
