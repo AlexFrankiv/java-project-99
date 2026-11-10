@@ -1,6 +1,5 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.commponent.UserUtils;
 import hexlet.code.app.dto.users.UserCreateDTO;
 import hexlet.code.app.dto.users.UserDTO;
 import hexlet.code.app.dto.users.UserUpdateDTO;
@@ -9,30 +8,22 @@ import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private UserUtils userUtils;
+    private final UserMapper userMapper;
 
     public List<UserDTO> getAll() {
         return userRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt")).stream()
@@ -58,13 +49,6 @@ public class UserService {
     }
 
     public UserDTO updateUser(UserUpdateDTO dataDTO, Long id) {
-        var currentUser = userUtils.getCurrentUser();
-
-        if (currentUser != null &&
-                !currentUser.getEmail().equals("hexlet@example.com") &&
-                !currentUser.getId().equals(id)) {
-            throw new AccessDeniedException("You can only edit your own profile");
-        }
 
         var user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User with id - " + id + " not found!"));
@@ -86,17 +70,6 @@ public class UserService {
     }
 
     public void deleteUser(Long id) {
-        var currentUser = userUtils.getCurrentUser();
-
-        if (currentUser != null &&
-                !currentUser.getEmail().equals("hexlet@example.com") &&
-                !currentUser.getId().equals(id)) {
-            throw new AccessDeniedException("You can only delete your own profile");
-        }
-
-        if (taskRepository.existsByAssigneeId(id)) {
-            throw new ResourceInUseException("Cannot delete user: user is assigned to tasks");
-        }
         userRepository.deleteById(id);
     }
 }

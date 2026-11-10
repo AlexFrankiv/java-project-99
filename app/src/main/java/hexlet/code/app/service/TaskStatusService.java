@@ -8,21 +8,18 @@ import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.TaskStatusMapper;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class TaskStatusService {
-    @Autowired
-    private TaskStatusRepository taskStatusRepository;
 
-    @Autowired
-    private TaskStatusMapper taskStatusMapper;
+    private final TaskStatusRepository taskStatusRepository;
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final TaskStatusMapper taskStatusMapper;
 
     public List<TaskStatusDTO> getAllStatuses() {
         return taskStatusRepository.findAll().stream().map(taskStatusMapper::map).toList();
@@ -54,9 +51,9 @@ public class TaskStatusService {
     }
 
     public void deleteStatus(Long id) {
-        if (taskRepository.existsByTaskStatusId(id)) {
-            throw new ResourceInUseException("Cannot delete status: it is used by tasks");
-        }
+        taskStatusRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task status with id " + id + " not found!"));
+
         taskStatusRepository.deleteById(id);
     }
 

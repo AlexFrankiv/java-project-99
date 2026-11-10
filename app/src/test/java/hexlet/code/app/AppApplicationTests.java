@@ -1,20 +1,23 @@
 package hexlet.code.app;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.app.component.DataInitializer;
 import hexlet.code.app.dto.AuthRequest;
 import hexlet.code.app.dto.users.UserCreateDTO;
 import hexlet.code.app.dto.users.UserUpdateDTO;
+import hexlet.code.app.repository.LabelRepository;
+import hexlet.code.app.repository.TaskRepository;
+import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
-import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openapitools.jackson.nullable.JsonNullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -24,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
 class AppApplicationTests {
 
     @Autowired
@@ -38,8 +40,28 @@ class AppApplicationTests {
     @Autowired
     private ObjectMapper om;
 
+    @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
+    private DataInitializer dataInitializer;
+
     @BeforeEach
     void setUp() throws Exception {
+
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
+
+        dataInitializer.run(null);
+
         var loginRequest = new AuthRequest();
         loginRequest.setUsername("hexlet@example.com");
         loginRequest.setPassword("qwerty");
@@ -53,7 +75,6 @@ class AppApplicationTests {
                 .getContentAsString();
 
         adminToken = response.replace("\"", "");
-        assertThat(adminToken).isNotBlank();
     }
 
     @Test

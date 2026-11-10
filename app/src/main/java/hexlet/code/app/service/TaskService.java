@@ -8,7 +8,7 @@ import hexlet.code.app.mapper.TaskMapper;
 import hexlet.code.app.model.Label;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.repository.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -17,21 +17,13 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@RequiredArgsConstructor
 public class TaskService {
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private TaskStatusRepository statusRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private TaskMapper taskMapper;
-
-    @Autowired
-    private LabelRepository labelRepository;
+    private final TaskRepository taskRepository;
+    private final TaskStatusRepository statusRepository;
+    private final UserRepository userRepository;
+    private final TaskMapper taskMapper;
+    private final LabelRepository labelRepository;
 
     public List<TaskDTO> getAllTasks(String titleCont, Long assigneeId, String status, Long labelId) {
         Specification<Task> spec = Specification.where(TaskSpecification.titleContains(titleCont))

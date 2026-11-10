@@ -8,21 +8,18 @@ import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.LabelMapper;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class LabelService {
-    @Autowired
-    private LabelRepository labelRepository;
 
-    @Autowired
-    private TaskRepository taskRepository;
-
-    @Autowired
-    private LabelMapper labelMapper;
+    private final LabelRepository labelRepository;
+    private final TaskRepository taskRepository;
+    private final LabelMapper labelMapper;
 
     public List<LabelDTO> getAll() {
         return labelRepository.findAll().stream().map(labelMapper::map).toList();
@@ -50,9 +47,7 @@ public class LabelService {
     }
 
     public void delete(Long id) {
-        if (taskRepository.existsByLabelsId(id)) {
-            throw new ResourceInUseException("Cannot delete label: it is used by tasks");
-        }
+
         labelRepository.deleteById(id);
     }
 }

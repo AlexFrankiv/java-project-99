@@ -5,18 +5,20 @@ import hexlet.code.app.dto.users.UserDTO;
 import hexlet.code.app.dto.users.UserUpdateDTO;
 import hexlet.code.app.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
+
+    private final UserService userService;
 
     @GetMapping("/users")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -41,18 +43,21 @@ public class UserController {
 
     @PutMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@userUtils.isSelf(#id)")
     public UserDTO update(@Valid @RequestBody UserUpdateDTO dataDTO, @PathVariable Long id) {
         return userService.updateUser(dataDTO, id);
     }
 
     @PatchMapping("/users/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("@userUtils.isSelf(#id)")
     public UserDTO patchUpdate(@Valid @RequestBody UserUpdateDTO dataDTO, @PathVariable Long id) {
         return userService.updateUser(dataDTO, id);
     }
 
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("@userUtils.isSelf(#id)")
     public void destroy(@PathVariable Long id) {
         userService.deleteUser(id);
     }

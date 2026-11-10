@@ -1,9 +1,11 @@
 package hexlet.code.app;
 
+import hexlet.code.app.component.DataInitializer;
 import hexlet.code.app.dto.AuthRequest;
 import hexlet.code.app.dto.tasks.TaskCreateDTO;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskRepository;
+import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +28,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
 public class TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -46,8 +47,24 @@ public class TaskControllerTest {
     private String adminToken;
     private Long adminId;
 
+    @Autowired
+    private TaskStatusRepository taskStatusRepository;
+
+    @Autowired
+    private DataInitializer dataInitializer;
+
     @BeforeEach
     void setUp() throws Exception {
+
+        taskRepository.deleteAll();
+        userRepository.deleteAll();
+        taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
+
+        dataInitializer.run(null);
+
+        adminId = userRepository.findByEmail("hexlet@example.com").orElseThrow().getId();
+
         var loginRequest = new AuthRequest();
         loginRequest.setUsername("hexlet@example.com");
         loginRequest.setPassword("qwerty");
@@ -55,10 +72,12 @@ public class TaskControllerTest {
         var response = mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(om.writeValueAsString(loginRequest)))
-                .andReturn().getResponse().getContentAsString();
-        adminToken = response.replace("\"", "");
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
 
-        adminId = userRepository.findByEmail("hexlet@example.com").get().getId();
+        adminToken = response.replace("\"", "");
     }
 
     @Test
