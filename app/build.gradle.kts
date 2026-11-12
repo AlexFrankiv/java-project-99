@@ -19,6 +19,7 @@ sonar {
     properties {
         property("sonar.projectKey", "AlexFrankiv_java-project-99")
         property("sonar.organization", "alexfrankiv")
+        property("sonar.coverage.exclusions", "**/model/**, **/dto/**, **/mapper/*Impl.java, **/AppApplication.java")
     }
 }
 checkstyle {
