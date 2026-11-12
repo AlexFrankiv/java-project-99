@@ -67,7 +67,12 @@ tasks.jacocoTestReport {
     }
     classDirectories.setFrom(files(classDirectories.files.map {
         fileTree(it) {
-            exclude("**/AppApplication.class")
+            exclude(
+                "**/AppApplication.class",
+                "**/model/**",
+                "**/mapper/*Impl.class",
+                "**/dto/**"
+            )
         }
     }))
 }
