@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     id("org.sonarqube") version "7.5.0.8588"
     jacoco
+    checkstyle
 }
 
 group = "hexlet.code"
@@ -19,6 +20,9 @@ sonar {
         property("sonar.projectKey", "AlexFrankiv_java-project-99")
         property("sonar.organization", "alexfrankiv")
     }
+}
+checkstyle {
+    toolVersion = "10.12.4"
 }
 
 repositories {
@@ -66,4 +70,8 @@ tasks.jacocoTestReport {
             exclude("**/AppApplication.class")
         }
     }))
+}
+
+configurations.checkstyle {
+    exclude(group = "com.google.collections", module = "google-collections")
 }

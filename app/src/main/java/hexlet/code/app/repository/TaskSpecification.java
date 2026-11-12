@@ -5,18 +5,18 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class TaskSpecification {
     public static Specification<Task> titleContains(String titleCont) {
-        return (root, query, cb) -> titleCont == null ? null :
-                cb.like(cb.lower(root.get("name")), "%" + titleCont.toLowerCase() + "%");
+        return (root, query, cb) -> titleCont == null ? null
+                : cb.like(cb.lower(root.get("name")), "%" + titleCont.toLowerCase() + "%");
     }
 
     public static Specification<Task> hasAssigneeId(Long assigneeId) {
-        return (root, query, cb) -> assigneeId == null ? null :
-                cb.equal(root.get("assignee").get("id"), assigneeId);
+        return (root, query, cb) -> assigneeId == null ? null
+                : cb.equal(root.get("assignee").get("id"), assigneeId);
     }
 
     public static Specification<Task> hasStatus(String status) {
-        return (root, query, cb) -> status == null ? null :
-                cb.equal(root.get("taskStatus").get("slug"), status);
+        return (root, query, cb) -> status == null ? null
+                : cb.equal(root.get("taskStatus").get("slug"), status);
     }
 
     public static Specification<Task> hasLabelId(Long labelId) {

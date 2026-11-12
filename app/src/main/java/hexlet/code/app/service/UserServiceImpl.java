@@ -3,11 +3,10 @@ package hexlet.code.app.service;
 import hexlet.code.app.dto.users.UserCreateDTO;
 import hexlet.code.app.dto.users.UserDTO;
 import hexlet.code.app.dto.users.UserUpdateDTO;
-import hexlet.code.app.exceptions.ResourceInUseException;
 import hexlet.code.app.exceptions.ResourceNotFoundException;
 import hexlet.code.app.mapper.UserMapper;
-import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.UserRepository;
+import hexlet.code.app.service.interfaces.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -57,12 +56,10 @@ public class UserService {
 
         userMapper.update(dataDTO, user);
 
-        if (dataDTO.getPassword() != null && dataDTO.getPassword().isPresent()
-                && dataDTO.getPassword().get() != null && !dataDTO.getPassword().get().isBlank()) {
-            user.setPassword(passwordEncoder.encode(dataDTO.getPassword().get()));
-        } else {
-            user.setPassword(oldPassword);
+        if (dataDTO.getPassword() != null && !dataDTO.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(dataDTO.getPassword()));
         }
+
 
         userRepository.save(user);
         return userMapper.map(user);

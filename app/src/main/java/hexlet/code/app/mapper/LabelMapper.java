@@ -4,7 +4,11 @@ import hexlet.code.app.dto.labels.LabelCreateDTO;
 import hexlet.code.app.dto.labels.LabelDTO;
 import hexlet.code.app.dto.labels.LabelUpdateDTO;
 import hexlet.code.app.model.Label;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingConstants;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE,
         componentModel = MappingConstants.ComponentModel.SPRING,
